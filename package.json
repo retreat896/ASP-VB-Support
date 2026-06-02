@@ -18,13 +18,6 @@
     "Programming Languages"
   ],
   "main": "./extension.js",
-  "files": [
-    "extension.js",
-    "language-configuration.json",
-    "syntaxes",
-    "README.md",
-    "LICENSE"
-  ],
   "activationEvents": [
     "onLanguage:asp"
   ],
