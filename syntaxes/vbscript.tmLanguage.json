@@ -42,7 +42,7 @@
           "endCaptures": {
             "0": { "name": "punctuation.definition.string.end.asp" }
           },
-          "name": "string.quoted.double.asp",
+          "name": "string.quoted.double.asp.embedded",
           "patterns": [
             {
               "match": "\"\"",

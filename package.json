@@ -3,7 +3,11 @@
   "displayName": "Classic ASP VBScript Syntax Highlight",
   "description": "Proper syntax highlighting for Classic ASP (VBScript) files with embedded HTML. Handles ASP blocks inside HTML attributes without quote syntax issues.",
   "version": "1.0.0",
-  "publisher": "kadams",
+  "publisher": "Retreat896",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/retreat896/ASP-VB-Support.git"
+  },
   "engines": {
     "vscode": "^1.60.0"
   },
@@ -14,6 +18,13 @@
     "Programming Languages"
   ],
   "main": "./extension.js",
+  "files": [
+    "extension.js",
+    "language-configuration.json",
+    "syntaxes",
+    "README.md",
+    "LICENSE"
+  ],
   "activationEvents": [
     "onLanguage:asp"
   ],
@@ -63,12 +74,19 @@
       }
     ],
     "configurationDefaults": {
-      "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        "html",
-        "asp"
-      ]
+      "[asp]": {
+        "editor.tokenColorCustomizations": {
+          "textMateRules": [
+            {
+              "scope": "string.quoted.double.asp.embedded",
+              "settings": {
+                "foreground": "#E67E22",
+                "fontStyle": "italic"
+              }
+            }
+          ]
+        }
+      }
     }
   }
 }
