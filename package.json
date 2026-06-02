@@ -1,0 +1,74 @@
+{
+  "name": "asp-vb-syntax",
+  "displayName": "Classic ASP VBScript Syntax Highlight",
+  "description": "Proper syntax highlighting for Classic ASP (VBScript) files with embedded HTML. Handles ASP blocks inside HTML attributes without quote syntax issues.",
+  "version": "1.0.0",
+  "publisher": "kadams",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "scripts": {
+    "package":"vsce package"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:asp"
+  ],
+  "dependencies": {
+    "prettier": "^2.8.8"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "asp",
+        "aliases": [
+          "Classic ASP",
+          "asp"
+        ],
+        "extensions": [
+          ".asp",
+          ".asa"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "asp",
+        "scopeName": "text.html.asp",
+        "path": "./syntaxes/asp.tmLanguage.json",
+        "embeddedLanguages": {
+          "text.html.basic": "html",
+          "source.asp": "vb",
+          "source.js": "javascript",
+          "source.css": "css",
+          "source.js.embedded.html": "javascript",
+          "source.css.embedded.html": "css"
+        }
+      },
+      {
+        "scopeName": "source.asp",
+        "path": "./syntaxes/vbscript.tmLanguage.json"
+      },
+      {
+        "scopeName": "asp.injection",
+        "path": "./syntaxes/asp.injection.tmLanguage.json",
+        "injectTo": [
+          "text.html.basic",
+          "text.html.asp"
+        ]
+      }
+    ],
+    "configurationDefaults": {
+      "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "html",
+        "asp"
+      ]
+    }
+  }
+}

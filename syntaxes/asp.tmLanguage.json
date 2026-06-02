@@ -1,0 +1,65 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Classic ASP",
+  "scopeName": "text.html.asp",
+  "patterns": [
+    {
+      "name": "meta.asp.javascript.directive",
+      "begin": "\\A(\\s*)(<\\s*%\\s*@\\s*[Ll]anguage\\s*=\\s*\"?(?:[Jj][Ss]cript|[Jj]ava[Ss]cript)\"?\\s*%\\s*>)",
+      "beginCaptures": {
+        "2": { "name": "punctuation.section.embedded.begin.asp" }
+      },
+      "end": "$^",
+      "patterns": [
+        {
+          "include": "#js-asp-code-block"
+        },
+        {
+          "include": "text.html.basic"
+        }
+      ]
+    },
+    {
+      "include": "#asp-code-block"
+    },
+    {
+      "include": "text.html.basic"
+    }
+  ],
+  "repository": {
+    "asp-code-block": {
+      "begin": "<%(=|@)?",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.embedded.begin.asp" }
+      },
+      "end": "%>",
+      "endCaptures": {
+        "0": { "name": "punctuation.section.embedded.end.asp" }
+      },
+      "name": "meta.embedded.block.asp",
+      "contentName": "source.asp",
+      "patterns": [
+        {
+          "include": "source.asp"
+        }
+      ]
+    },
+    "js-asp-code-block": {
+      "begin": "<%(=|@)?",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.embedded.begin.asp" }
+      },
+      "end": "%>",
+      "endCaptures": {
+        "0": { "name": "punctuation.section.embedded.end.asp" }
+      },
+      "name": "meta.embedded.block.asp",
+      "contentName": "source.js",
+      "patterns": [
+        {
+          "include": "source.js"
+        }
+      ]
+    }
+  }
+}

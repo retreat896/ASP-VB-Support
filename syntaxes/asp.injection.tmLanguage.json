@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "scopeName": "asp.injection",
+  "injectionSelector": "L:string.quoted.double.html, L:string.quoted.single.html, L:meta.tag.any.html -comment, L:string.quoted.double.js, L:string.quoted.single.js, L:string.template.js, L:source.js -comment, L:string.quoted.double.css, L:string.quoted.single.css, L:source.css -comment",
+  "patterns": [
+    {
+      "begin": "<%(=|@)?",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.embedded.begin.asp" }
+      },
+      "end": "%>",
+      "endCaptures": {
+        "0": { "name": "punctuation.section.embedded.end.asp" }
+      },
+      "name": "meta.embedded.line.asp",
+      "contentName": "source.asp",
+      "patterns": [
+        {
+          "include": "source.asp"
+        }
+      ]
+    }
+  ]
+}

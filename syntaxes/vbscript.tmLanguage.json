@@ -1,0 +1,100 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "VBScript",
+  "scopeName": "source.asp",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#builtins"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#operators"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "match": "('.*)|((?i:REM)(?:\\s.*|\\b))",
+          "name": "comment.line.apostrophe.asp"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "begin": "\"",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.string.begin.asp" }
+          },
+          "end": "\"(?!\")",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.string.end.asp" }
+          },
+          "name": "string.quoted.double.asp",
+          "patterns": [
+            {
+              "match": "\"\"",
+              "name": "constant.character.escape.quote.asp"
+            }
+          ]
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "match": "\\b(?i:if|then|else|elseif|end\\s+if|for|each|in|next|to|step|do|loop|until|while|wend|select|case|end\\s+select|function|sub|end\\s+function|end\\s+sub|class|end\\s+class|dim|redim|const|set|preserve|call|execute|eval|on\\s+error|resume\\s+next|goto\\s+0|exit\\s+for|exit\\s+do|exit\\s+function|exit\\s+sub|public|private|property|get|let|new)\\b",
+          "name": "keyword.control.asp"
+        },
+        {
+          "match": "\\b(?i:true|false|nothing|null|empty)\\b",
+          "name": "constant.language.asp"
+        }
+      ]
+    },
+    "builtins": {
+      "patterns": [
+        {
+          "match": "\\b(?i:request|response|session|application|server|err)\\b",
+          "name": "support.class.asp"
+        },
+        {
+          "match": "\\b(?i:write|redirect|createobject|querystring|form|cookies|servervariables|urlencode|htmlencode|mappath|abandon)\\b",
+          "name": "support.function.asp"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "match": "\\b\\d+(\\.\\d+)?\\b",
+          "name": "constant.numeric.asp"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "match": "(&|\\+|-|\\*|/|\\\\|\\^|<=|>=|<>|<|>|=)",
+          "name": "keyword.operator.asp"
+        },
+        {
+          "match": "\\b(?i:and|or|not|xor|eqv|imp|is|mod)\\b",
+          "name": "keyword.operator.logical.asp"
+        }
+      ]
+    }
+  }
+}
