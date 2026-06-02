@@ -69,19 +69,87 @@ To enable JavaScript linting inside script tags and event handlers in Classic AS
    
    **Flat Config (`eslint.config.js`):**
    ```javascript
-   const html = require("eslint-plugin-html");
+   const htmlPlugin = require("eslint-plugin-html");
+   const extract = require("eslint-plugin-html/src/extract");
+   const { remapMessages } = require("eslint-plugin-html/src/remapMessages");
+   const { getSettings } = require("eslint-plugin-html/src/settings");
+
+   // Keep track of extracted code blocks for postprocessing
+   const fileExtracts = new Map();
+
+   const aspProcessor = {
+     preprocess(text, filename) {
+       const aspRegex = /<%([\s\S]*?)%>/g;
+       const preprocessedText = text.replace(aspRegex, (match) => {
+         const len = match.length;
+         if (len < 5) return match;
+         
+         const isExpression = match.startsWith("<%=");
+         if (isExpression) {
+           return "/*" + " ".repeat(len - 5) + "*/0";
+         } else {
+           return "/*" + " ".repeat(len - 5) + "*/ ";
+         }
+       });
+       
+       const settings = getSettings({});
+       const extractResult = extract(preprocessedText, false, settings);
+       
+       fileExtracts.set(filename, extractResult);
+       
+       return extractResult.code.map((codePart, index) => ({
+         text: String(codePart),
+         filename: `${index}.js`,
+       }));
+     },
+     postprocess(messages, filename) {
+       const extractResult = fileExtracts.get(filename);
+       if (!extractResult) {
+         return [];
+       }
+       fileExtracts.delete(filename);
+       
+       const flattenedMessages = [];
+       for (let i = 0; i < messages.length; i++) {
+         const blockMessages = messages[i];
+         const codePart = extractResult.code[i];
+         if (codePart) {
+           const remapped = remapMessages(blockMessages, extractResult.hasBOM, codePart);
+           flattenedMessages.push(...remapped);
+         }
+       }
+       return flattenedMessages;
+     },
+     supportsAutofix: true
+   };
 
    module.exports = [
      {
-       files: ["**/*.asp"],
-       plugins: {
-         html,
-       },
-       settings: {
-         "html/html-extensions": [".asp", ".html"]
-       },
        languageOptions: {
          sourceType: "script",
+         globals: {
+           window: "readonly",
+           document: "readonly",
+           console: "readonly",
+           $: "readonly",
+           jQuery: "readonly",
+         }
+       },
+       rules: {
+         "no-unused-vars": "warn",
+         "no-undef": "error",
+         "eqeqeq": "warn",
+         "no-console": "off",
+       }
+     },
+     {
+       files: ["**/*.asp"],
+       plugins: {
+         html: htmlPlugin,
+       },
+       processor: aspProcessor,
+       settings: {
+         "html/html-extensions": [".asp", ".html"]
        },
      },
    ];
