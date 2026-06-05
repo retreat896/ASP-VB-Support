@@ -2,8 +2,9 @@
   "name": "asp-vb-syntax",
   "displayName": "Classic ASP VBScript Syntax Highlight",
   "description": "Proper syntax highlighting for Classic ASP (VBScript) files with embedded HTML. Handles ASP blocks inside HTML attributes without quote syntax issues.",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "publisher": "Retreat896",
+  "icon": "icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/retreat896/ASP-VB-Support.git"

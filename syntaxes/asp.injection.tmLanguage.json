@@ -19,6 +19,10 @@
           "include": "source.asp"
         }
       ]
+    },
+    {
+      "match": "(?i:<!--|-->)",
+      "name": "comment.block.html.asp.injection"
     }
   ]
 }

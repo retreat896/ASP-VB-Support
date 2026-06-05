@@ -4,6 +4,18 @@
   "scopeName": "text.html.asp",
   "patterns": [
     {
+      "name": "meta.directive.include.asp",
+      "match": "(<!--)\\s*(?i:(#include))\\s+(?i:(file|virtual))\\s*(=)\\s*((?:\"[^\"]*\")|(?:'[^']*'))\\s*(-->)",
+      "captures": {
+        "1": { "name": "punctuation.definition.comment.asp" },
+        "2": { "name": "keyword.control.include.asp" },
+        "3": { "name": "entity.other.attribute-name.asp" },
+        "4": { "name": "punctuation.separator.key-value.asp" },
+        "5": { "name": "string.quoted.asp" },
+        "6": { "name": "punctuation.definition.comment.asp" }
+      }
+    },
+    {
       "name": "meta.asp.javascript.directive",
       "begin": "\\A(\\s*)(<\\s*%\\s*@\\s*[Ll]anguage\\s*=\\s*\"?(?:[Jj][Ss]cript|[Jj]ava[Ss]cript)\"?\\s*%\\s*>)",
       "beginCaptures": {

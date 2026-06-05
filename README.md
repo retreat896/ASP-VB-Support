@@ -22,6 +22,7 @@ Server-side values can be used by embedding ASP output blocks directly inside ht
 - **Dynamic JavaScript Syntaxing**: Automatically colors server-side ASP `<% ... %>` blocks using the JavaScript grammar (`source.js`) instead of VBScript if the file starts with a JavaScript/JScript directive (`<%@ Language="JavaScript" %>`).
 - **Prettier-based Formatting**: Formats the HTML layout and embedded JavaScript `<script>` blocks using Prettier, while keeping embedded ASP code blocks intact.
 - **VBScript Syntax Highlighting**: Basic syntax highlighting for keywords, comments, strings, operators, and built-in objects (`Request`, `Response`, `Session`, `Application`, `Server`).
+- **Server-Side Include Highlighting**: Specifically highlights Classic ASP include directives (e.g. `<!--#include file="..."-->` and `<!--#include virtual="..."-->`) so they stand out from standard HTML comments.
 - **Language Configurations**: Auto-closes double quotes, single quotes, parentheses, brackets, and comments using `'`.
 
 ## How to Install
@@ -69,6 +70,7 @@ To enable JavaScript linting inside script tags and event handlers in Classic AS
    
    **Flat Config (`eslint.config.js`):**
    ```javascript
+   const globals = require("globals");
    const htmlPlugin = require("eslint-plugin-html");
    const extract = require("eslint-plugin-html/src/extract");
    const { remapMessages } = require("eslint-plugin-html/src/remapMessages");
@@ -82,14 +84,49 @@ To enable JavaScript linting inside script tags and event handlers in Classic AS
        const aspRegex = /<%([\s\S]*?)%>/g;
        const preprocessedText = text.replace(aspRegex, (match) => {
          const len = match.length;
-         if (len < 5) return match;
+         if (len < 5) return match; // fallback
          
          const isExpression = match.startsWith("<%=");
-         if (isExpression) {
-           return "/*" + " ".repeat(len - 5) + "*/0";
-         } else {
-           return "/*" + " ".repeat(len - 5) + "*/ ";
+         let chars = match.split("");
+         let openCount = 0;
+         for (let i = 0; i < chars.length; i++) {
+           if (chars[i] !== "\r" && chars[i] !== "\n") {
+             if (openCount === 0) {
+               chars[i] = "/";
+               openCount++;
+             } else if (openCount === 1) {
+               chars[i] = "*";
+               openCount++;
+               break;
+             }
+           }
          }
+         
+         let closeCount = 0;
+         let hasExpressionSuffix = isExpression;
+         for (let i = chars.length - 1; i >= 0; i--) {
+           if (chars[i] !== "\r" && chars[i] !== "\n") {
+             if (hasExpressionSuffix) {
+               chars[i] = "0";
+               hasExpressionSuffix = false;
+             } else if (closeCount === 0) {
+               chars[i] = "/";
+               closeCount++;
+             } else if (closeCount === 1) {
+               chars[i] = "*";
+               closeCount++;
+               break;
+             }
+           }
+         }
+         
+         for (let i = 0; i < chars.length; i++) {
+           if (chars[i] !== "\r" && chars[i] !== "\n" && chars[i] !== "/" && chars[i] !== "*" && chars[i] !== "0") {
+             chars[i] = " ";
+           }
+         }
+         
+         return chars.join("");
        });
        
        const settings = getSettings({});
@@ -128,9 +165,7 @@ To enable JavaScript linting inside script tags and event handlers in Classic AS
        languageOptions: {
          sourceType: "script",
          globals: {
-           window: "readonly",
-           document: "readonly",
-           console: "readonly",
+           ...globals.browser,
            $: "readonly",
            jQuery: "readonly",
          }
@@ -142,17 +177,26 @@ To enable JavaScript linting inside script tags and event handlers in Classic AS
          "no-console": "off",
        }
      },
-     {
-       files: ["**/*.asp"],
-       plugins: {
-         html: htmlPlugin,
-       },
-       processor: aspProcessor,
-       settings: {
-         "html/html-extensions": [".asp", ".html"]
-       },
-     },
-   ];
+      {
+        files: ["eslint.config.js"],
+        languageOptions: {
+          sourceType: "commonjs",
+          globals: {
+            ...globals.node,
+          }
+        }
+      },
+      {
+        files: ["**/*.asp"],
+        plugins: {
+          html: htmlPlugin,
+        },
+        processor: aspProcessor,
+        settings: {
+          "html/html-extensions": [".asp", ".html"]
+        },
+      },
+    ];
    ```
 
 ## Customizing Embedded String Colors
